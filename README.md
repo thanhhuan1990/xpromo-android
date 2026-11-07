@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
 `app/build.gradle.kts`:
 ```kotlin
-implementation("com.github.thanhhuan1990:xpromo-android:1.0.0")
+implementation("com.github.thanhhuan1990:xpromo-android:1.0.1")
 ```
 
 `Application.onCreate` hoặc DI container:

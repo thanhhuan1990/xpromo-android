@@ -9,14 +9,14 @@ plugins {
 }
 
 // JitPack đặt VERSION = tên tag (vd 1.0.0).
-val libVersion = System.getenv("VERSION")?.removePrefix("v") ?: "1.0.0"
+val libVersion = System.getenv("VERSION")?.removePrefix("v") ?: "1.0.1"
 
 android {
     namespace = "com.huanhuynh.xpromo"
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 24
         consumerProguardFiles("consumer-rules.pro")
     }
     compileOptions {
