@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "version": "2026.11.07.3",
+  "developer": "HuanHuynh",
+  "apps": [
+    {
+      "id": "com.huanhuynh.lichvannien",
+      "name": "Lịch Vạn Niên 2027",
+      "tagline": "Lịch âm, ngày tốt xấu, giờ hoàng đạo, nhắc rằm mùng 1",
+      "emoji": "📅",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.lichvannien.png",
+      "groups": [
+        "spiritual",
+        "daily",
+        "household"
+      ],
+      "priority": 90,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.sochitieu",
+      "name": "Sổ Chi Tiêu",
+      "tagline": "Ghi thu chi hằng ngày, biết tiền đi đâu mỗi tháng",
+      "emoji": "💰",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.sochitieu.png",
+      "groups": [
+        "household",
+        "finance",
+        "daily"
+      ],
+      "priority": 80,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.waterreminder",
+      "name": "Đủ Nước – Nhắc uống nước",
+      "tagline": "Nhắc uống nước đúng giờ, đủ lượng theo cân nặng",
+      "emoji": "💧",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.waterreminder.png",
+      "groups": [
+        "health",
+        "daily"
+      ],
+      "priority": 80,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.numerology",
+      "name": "Thần Số Học",
+      "tagline": "Khám phá con số chủ đạo và vận số của bạn",
+      "emoji": "🔢",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.numerology.png",
+      "groups": [
+        "spiritual"
+      ],
+      "priority": 70,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.la_ban_phong_thuy",
+      "name": "Tự Xem Phong Thuỷ",
+      "tagline": "La bàn phong thuỷ, xem hướng nhà hợp tuổi",
+      "emoji": "🧭",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.la_ban_phong_thuy.png",
+      "groups": [
+        "spiritual",
+        "household"
+      ],
+      "priority": 60,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.spin_the_wheel",
+      "name": "Wheel of Anything",
+      "tagline": "Vòng quay may mắn – để vòng quay quyết định giúp bạn",
+      "emoji": "🎡",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.spin_the_wheel.png",
+      "groups": [
+        "fun"
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "com.huanhuynh.cyclecare",
+      "name": "Hoa Nguyệt: Lịch kinh nguyệt",
+      "tagline": "Lịch kinh nguyệt, ngày rụng trứng, theo dõi thai kỳ",
+      "emoji": "🌸",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cyclecare.png",
+      "groups": [
+        "health"
+      ],
+      "priority": 70,
+      "enabled": false,
+      "note": "Bật khi app đã lên Google Play"
+    },
+    {
+      "id": "com.huanhuynh.freshnest",
+      "name": "Tủ Lạnh Nhà Mình",
+      "tagline": "Quản lý tủ lạnh, nhắc hạn sử dụng thực phẩm",
+      "emoji": "🧊",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.freshnest.png",
+      "groups": [
+        "household",
+        "health"
+      ],
+      "priority": 70,
+      "enabled": false,
+      "note": "Bật khi app đã lên Google Play"
+    }
+  ]
+}

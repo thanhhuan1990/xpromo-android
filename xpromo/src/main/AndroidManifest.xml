@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Tải danh sách app (apps.json) và icon từ thanhhuan1990.github.io. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+        Android 11+: chỉ thấy được app đã khai báo ở đây → dùng để không gợi ý app user đã cài.
+        Manifest này tự gộp vào app dùng thư viện. Có app mới: thêm package vào đây (và apps.json), ra phiên bản mới.
+        Được phép khai báo trước package của app chưa phát hành.
+        Test ManifestQueriesTest kiểm tra mọi app trong assets/xpromo/apps.json đều có ở đây.
+    -->
+    <queries>
+        <package android:name="com.huanhuynh.lichvannien" />
+        <package android:name="com.huanhuynh.sochitieu" />
+        <package android:name="com.huanhuynh.waterreminder" />
+        <package android:name="com.huanhuynh.numerology" />
+        <package android:name="com.huanhuynh.la_ban_phong_thuy" />
+        <package android:name="com.huanhuynh.spin_the_wheel" />
+        <package android:name="com.huanhuynh.cyclecare" />
+        <package android:name="com.huanhuynh.freshnest" />
+    </queries>
+</manifest>

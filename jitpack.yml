@@ -1,0 +1,5 @@
+# JitPack build: https://jitpack.io/#thanhhuan1990/xpromo-android
+jdk:
+  - openjdk21
+install:
+  - ./gradlew :xpromo:publishReleasePublicationToMavenLocal -x test
