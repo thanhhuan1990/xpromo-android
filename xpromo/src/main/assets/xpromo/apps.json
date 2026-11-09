@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.07.3",
+  "version": "2026.11.09.2",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -105,6 +105,34 @@
         "health"
       ],
       "priority": 70,
+      "enabled": false,
+      "note": "Bật khi app đã lên Google Play"
+    },
+    {
+      "id": "com.huanhuynh.vankhan",
+      "name": "Văn Khấn 3 Miền",
+      "tagline": "Văn khấn, mâm lễ, lịch cúng chuẩn Bắc – Trung – Nam",
+      "emoji": "🙏",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.vankhan.png",
+      "groups": [
+        "spiritual",
+        "daily"
+      ],
+      "priority": 85,
+      "enabled": false,
+      "note": "Bật khi app đã lên Google Play"
+    },
+    {
+      "id": "com.huanhuynh.xinxam",
+      "name": "Xin Xăm – Gieo Quẻ",
+      "tagline": "Xin xăm Quan Âm, Quan Thánh và gieo quẻ Kinh Dịch",
+      "emoji": "🎋",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.xinxam.png",
+      "groups": [
+        "spiritual",
+        "fun"
+      ],
+      "priority": 85,
       "enabled": false,
       "note": "Bật khi app đã lên Google Play"
     }

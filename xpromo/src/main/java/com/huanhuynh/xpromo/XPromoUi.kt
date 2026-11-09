@@ -71,9 +71,11 @@ fun MoreAppsSection(
     placement: String = "settings",
     title: String = "Ứng dụng khác của chúng tôi",
     max: Int = 4,
+    /** Chỉ hiện các app này (theo thứ tự). null = tất cả, xếp theo nhóm chủ đề. */
+    ids: List<String>? = null,
 ) {
     val feed by xpromo.feed.collectAsState()
-    val apps = remember(feed) { xpromo.candidates(feed).take(max) }
+    val apps = remember(feed, ids) { (if (ids != null) xpromo.targets(ids, feed) else xpromo.candidates(feed)).take(max) }
     if (apps.isEmpty()) return
     val context = LocalContext.current
     LaunchedEffect(apps.map { it.id }) { xpromo.onListShown(apps, placement) }
@@ -152,6 +154,66 @@ fun XPromoCard(
                 }
                 Spacer(Modifier.width(8.dp))
                 FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text("Xem") }
+            }
+        }
+    }
+}
+
+/**
+ * Thẻ gợi ý một app cụ thể theo ngữ cảnh, kèm câu dẫn riêng.
+ * `targets`: danh sách (package, câu dẫn) theo thứ tự ưu tiên – hiện app đầu tiên còn đủ điều kiện
+ * (đang bật, chưa cài, chưa bị ẩn). Không giới hạn tần suất; nút ✕ ẩn app đó `hideDays` ngày.
+ */
+@Composable
+fun XPromoTargetCard(
+    xpromo: XPromo,
+    targets: List<Pair<String, String>>,
+    placement: String,
+    modifier: Modifier = Modifier,
+    label: String = "Ứng dụng cùng nhà phát triển",
+    button: String = "Xem",
+) {
+    val feed by xpromo.feed.collectAsState()
+    var dismissed by remember { mutableStateOf(setOf<String>()) }
+    val ids = targets.map { it.first }.filter { it !in dismissed }
+    val app = remember(feed, ids) { xpromo.target(ids, feed) } ?: return
+    val headline = targets.firstOrNull { it.first == app.id }?.second.orEmpty()
+    val context = LocalContext.current
+    LaunchedEffect(app.id, placement) { xpromo.onTargetShown(app, placement) }
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 1.dp,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(start = 14.dp, end = 4.dp, top = 6.dp, bottom = 12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = { dismissed = dismissed + app.id; xpromo.dismiss(app, placement) }) {
+                    Icon(Icons.Filled.Close, contentDescription = "Ẩn gợi ý", modifier = Modifier.size(18.dp))
+                }
+            }
+            if (headline.isNotBlank()) {
+                Text(
+                    headline, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(end = 10.dp, bottom = 8.dp),
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 10.dp)) {
+                XPromoIcon(xpromo, app, 48.dp)
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(app.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        app.tagline, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text(button) }
             }
         }
     }

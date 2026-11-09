@@ -108,6 +108,21 @@ class XPromo private constructor(private val context: Context, val config: XProm
         )
     }
 
+    /**
+     * Các app được chỉ định (theo thứ tự `ids`) mà còn đủ điều kiện quảng bá:
+     * đang bật, chưa cài, user chưa ẩn, đúng quốc gia. Dùng cho gợi ý đúng ngữ cảnh.
+     */
+    fun targets(ids: List<String>, feed: PromoFeed = this.feed.value): List<PromoApp> {
+        val ok = candidates(feed).associateBy { it.id }
+        return ids.mapNotNull { ok[it] }
+    }
+
+    /** App đầu tiên còn đủ điều kiện trong `ids`, hoặc null. */
+    fun target(ids: List<String>, feed: PromoFeed = this.feed.value): PromoApp? = targets(ids, feed).firstOrNull()
+
+    /** Ghi nhận thẻ gợi ý theo ngữ cảnh đã hiện (không tính vào giới hạn tần suất của XPromoCard). */
+    fun onTargetShown(app: PromoApp, placement: String) = log("xpromo_view", app, placement)
+
     /** App cho thẻ gợi ý theo ngữ cảnh, hoặc null nếu chưa tới lượt (giới hạn tần suất). */
     fun nextCard(feed: PromoFeed = this.feed.value): PromoApp? {
         if (!enabled) return null

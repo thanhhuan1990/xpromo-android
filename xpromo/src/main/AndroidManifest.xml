@@ -19,5 +19,7 @@
         <package android:name="com.huanhuynh.spin_the_wheel" />
         <package android:name="com.huanhuynh.cyclecare" />
         <package android:name="com.huanhuynh.freshnest" />
+        <package android:name="com.huanhuynh.vankhan" />
+        <package android:name="com.huanhuynh.xinxam" />
     </queries>
 </manifest>
