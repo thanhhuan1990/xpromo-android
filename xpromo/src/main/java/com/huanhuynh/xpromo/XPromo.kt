@@ -208,16 +208,39 @@ class XPromo private constructor(private val context: Context, val config: XProm
 
     private val memIcons = ConcurrentHashMap<String, ImageBitmap>()
 
-    suspend fun icon(url: String): ImageBitmap? {
-        memIcons[url]?.let { return it }
+    suspend fun icon(url: String): ImageBitmap? = icon(url, "")
+
+    /**
+     * Icon app: bộ nhớ → file cache (7 ngày) → tải [url] → icon đóng gói sẵn `assets/xpromo/icons/<id>.png`.
+     * Không mạng / URL lỗi vẫn có icon thật thay vì emoji.
+     */
+    suspend fun icon(url: String?, id: String): ImageBitmap? {
+        val key = url ?: "asset:$id"
+        memIcons[key]?.let { return it }
         return withContext(Dispatchers.IO) {
-            val dir = File(context.cacheDir, "xpromo_icons").apply { mkdirs() }
-            val file = File(dir, url.hashCode().toUInt().toString() + ".png")
-            if (!file.exists() || System.currentTimeMillis() - file.lastModified() > 7 * DAY_MS) {
-                httpGetBytes(url)?.let { bytes -> runCatching { file.writeBytes(bytes) } }
+            val fromNet = url?.let { u ->
+                val dir = File(context.cacheDir, "xpromo_icons").apply { mkdirs() }
+                val file = File(dir, u.hashCode().toUInt().toString() + ".png")
+                if (!file.exists() || System.currentTimeMillis() - file.lastModified() > 7 * DAY_MS) {
+                    val bytes = httpGetBytes(u)
+                    if (bytes == null) log("icon tải lỗi: $u")
+                    bytes?.let { b -> runCatching { file.writeBytes(b) } }
+                }
+                runCatching { BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap() }.getOrNull()
+                    ?: run { file.delete(); null }
             }
-            runCatching { BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap() }.getOrNull()
-                ?.also { memIcons[url] = it }
+            val bmp = fromNet ?: id.takeIf { it.isNotEmpty() }?.let { bundledIcon(it) }
+            bmp?.also { if (fromNet != null) memIcons[key] = it }
+        }
+    }
+
+    private fun bundledIcon(id: String): ImageBitmap? = runCatching {
+        context.assets.open("xpromo/icons/$id.png").use { BitmapFactory.decodeStream(it)?.asImageBitmap() }
+    }.getOrNull()
+
+    private fun log(msg: String) {
+        if ((context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            android.util.Log.d("XPromo", msg)
         }
     }
 

@@ -43,15 +43,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** Icon app: tải từ URL (có cache), chưa có thì hiện emoji. */
+/** Icon app: tải từ URL (có cache), lỗi thì dùng icon đóng gói sẵn, cuối cùng mới hiện emoji. */
 @Composable
 fun XPromoIcon(xpromo: XPromo, app: PromoApp, size: Dp = 44.dp) {
-    val bmp by produceState<ImageBitmap?>(initialValue = null, app.icon) {
-        value = app.icon?.let { xpromo.icon(it) }
+    val bmp by produceState<ImageBitmap?>(initialValue = null, app.icon, app.id) {
+        value = xpromo.icon(app.icon, app.id)
     }
     val shape = RoundedCornerShape(size * 0.24f)
     Box(
-        Modifier.size(size).clip(shape).background(MaterialTheme.colorScheme.primaryContainer),
+        Modifier.size(size).clip(shape).background(androidx.compose.ui.graphics.Color(0xFFEEF0F3)),
         contentAlignment = Alignment.Center,
     ) {
         val b = bmp
