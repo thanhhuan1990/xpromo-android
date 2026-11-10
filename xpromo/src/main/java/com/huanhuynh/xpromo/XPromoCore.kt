@@ -40,8 +40,10 @@ data class PromoApp(
 object XPromoPicker {
 
     /**
-     * Loại: chính app đang chạy, app tắt, app đã cài, app user đã ẩn, app không dành cho quốc gia này.
-     * Sắp: càng chung nhóm chủ đề với app hiện tại càng lên trước → priority → tên.
+     * Loại: chính app đang chạy, app user đã ẩn; app chưa cài thì loại thêm app tắt / không dành cho quốc gia này.
+     * App đã cài: bỏ qua nếu `includeInstalled = false` (mặc định), ngược lại giữ (kể cả app đang tắt) và xếp sau
+     * app chưa cài – để hiện nút "Mở".
+     * Sắp: chưa cài trước → càng chung nhóm chủ đề càng lên trước → priority → tên.
      */
     fun rank(
         feed: PromoFeed,
@@ -50,18 +52,24 @@ object XPromoPicker {
         country: String?,
         isInstalled: (String) -> Boolean,
         hidden: Set<String> = emptySet(),
+        includeInstalled: Boolean = false,
     ): List<PromoApp> {
         val c = country?.uppercase()
         return feed.apps
             .asSequence()
-            .filter { it.enabled && it.id != selfPackage && it.id !in hidden }
-            .filter { it.countries.isEmpty() || (c != null && c in it.countries.map(String::uppercase)) }
-            .filter { !isInstalled(it.id) }
+            .filter { it.id != selfPackage && it.id !in hidden }
+            .map { it to isInstalled(it.id) }
+            .filter { (app, installed) ->
+                if (installed) includeInstalled
+                else app.enabled && (app.countries.isEmpty() || (c != null && c in app.countries.map(String::uppercase)))
+            }
             .sortedWith(
-                compareByDescending<PromoApp> { app -> app.groups.count { it in hostGroups } }
-                    .thenByDescending { it.priority }
-                    .thenBy { it.name }
+                compareBy<Pair<PromoApp, Boolean>> { it.second }
+                    .thenByDescending { (app, _) -> app.groups.count { it in hostGroups } }
+                    .thenByDescending { it.first.priority }
+                    .thenBy { it.first.name }
             )
+            .map { it.first }
             .toList()
     }
 

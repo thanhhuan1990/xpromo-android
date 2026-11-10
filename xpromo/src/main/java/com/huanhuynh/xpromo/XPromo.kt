@@ -55,6 +55,11 @@ class XPromo private constructor(private val context: Context, val config: XProm
     private val prefs = context.getSharedPreferences("xpromo", Context.MODE_PRIVATE)
     private val feedFile = File(context.filesDir, "xpromo_feed.json")
 
+    // Phải khai báo trước _feed: thuộc tính được khởi tạo theo thứ tự khai báo, _feed gọi loadLocal() ngay.
+    private val bundledFeed: PromoFeed? by lazy {
+        parse(runCatching { context.assets.open(config.bundledAsset).bufferedReader().use { it.readText() } }.getOrNull())
+    }
+
     private val _feed = MutableStateFlow(loadLocal())
     val feed: StateFlow<PromoFeed> = _feed.asStateFlow()
 
@@ -64,11 +69,17 @@ class XPromo private constructor(private val context: Context, val config: XProm
         raw?.let { runCatching { json.decodeFromString(PromoFeed.serializer(), it) }.getOrNull() }
             ?.takeIf { it.apps.isNotEmpty() }
 
+    /** Lấy bản mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn trong thư viện. */
+    private fun newest(a: PromoFeed?, b: PromoFeed?): PromoFeed? = when {
+        a == null -> b
+        b == null -> a
+        b.version > a.version -> b
+        else -> a
+    }
+
     private fun loadLocal(): PromoFeed {
-        val cached = runCatching { feedFile.takeIf { it.exists() }?.readText() }.getOrNull()
-        parse(cached)?.let { return it }
-        val bundled = runCatching { context.assets.open(config.bundledAsset).bufferedReader().use { it.readText() } }.getOrNull()
-        return parse(bundled) ?: PromoFeed()
+        val cached = parse(runCatching { feedFile.takeIf { it.exists() }?.readText() }.getOrNull())
+        return newest(cached, bundledFeed) ?: PromoFeed()
     }
 
     /** Tải lại danh sách nếu đã quá `refreshHours`. Gọi lúc mở app. */
@@ -80,7 +91,7 @@ class XPromo private constructor(private val context: Context, val config: XProm
             val feed = parse(raw) ?: return@launch
             runCatching { feedFile.writeText(raw) }
             prefs.edit().putLong(KEY_FETCHED_AT, System.currentTimeMillis()).apply()
-            _feed.value = feed
+            _feed.value = newest(feed, bundledFeed) ?: feed
         }
     }
 
@@ -100,11 +111,11 @@ class XPromo private constructor(private val context: Context, val config: XProm
     }
 
     /** Danh sách app để hiện trong mục "Ứng dụng khác" (đã lọc app đã cài). */
-    fun candidates(feed: PromoFeed = this.feed.value): List<PromoApp> {
+    fun candidates(feed: PromoFeed = this.feed.value, includeInstalled: Boolean = false): List<PromoApp> {
         if (!enabled) return emptyList()
         return XPromoPicker.rank(
             feed, config.selfPackage, config.hostGroups, Locale.getDefault().country,
-            isInstalled = ::isInstalled, hidden = hiddenNow(),
+            isInstalled = ::isInstalled, hidden = hiddenNow(), includeInstalled = includeInstalled,
         )
     }
 
@@ -112,13 +123,16 @@ class XPromo private constructor(private val context: Context, val config: XProm
      * Các app được chỉ định (theo thứ tự `ids`) mà còn đủ điều kiện quảng bá:
      * đang bật, chưa cài, user chưa ẩn, đúng quốc gia. Dùng cho gợi ý đúng ngữ cảnh.
      */
-    fun targets(ids: List<String>, feed: PromoFeed = this.feed.value): List<PromoApp> {
-        val ok = candidates(feed).associateBy { it.id }
-        return ids.mapNotNull { ok[it] }
+    fun targets(ids: List<String>, feed: PromoFeed = this.feed.value, includeInstalled: Boolean = true): List<PromoApp> {
+        val ok = candidates(feed, includeInstalled).associateBy { it.id }
+        val list = ids.mapNotNull { ok[it] }
+        // Ưu tiên app chưa cài (để giới thiệu), app đã cài xếp sau (nút "Mở").
+        return list.sortedBy { isInstalled(it.id) }
     }
 
-    /** App đầu tiên còn đủ điều kiện trong `ids`, hoặc null. */
-    fun target(ids: List<String>, feed: PromoFeed = this.feed.value): PromoApp? = targets(ids, feed).firstOrNull()
+    /** App đầu tiên còn đủ điều kiện trong `ids` (ưu tiên app chưa cài), hoặc null. */
+    fun target(ids: List<String>, feed: PromoFeed = this.feed.value, includeInstalled: Boolean = true): PromoApp? =
+        targets(ids, feed, includeInstalled).firstOrNull()
 
     /** Ghi nhận thẻ gợi ý theo ngữ cảnh đã hiện (không tính vào giới hạn tần suất của XPromoCard). */
     fun onTargetShown(app: PromoApp, placement: String) = log("xpromo_view", app, placement)
@@ -162,8 +176,14 @@ class XPromo private constructor(private val context: Context, val config: XProm
         log("xpromo_dismiss", app, placement)
     }
 
-    /** Mở trang Google Play của app (kèm UTM). */
+    /** App đã cài → mở app; chưa cài → mở trang Google Play (kèm UTM). */
     fun open(activityContext: Context, app: PromoApp, placement: String) {
+        val launch = if (isInstalled(app.id)) activityContext.packageManager.getLaunchIntentForPackage(app.id) else null
+        if (launch != null) {
+            log("xpromo_open_app", app, placement)
+            runCatching { activityContext.startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                .onSuccess { return }
+        }
         log("xpromo_click", app, placement)
         val market = Intent(Intent.ACTION_VIEW, Uri.parse(XPromoPicker.marketUri(app.id, config.selfPackage, placement)))
             .setPackage("com.android.vending")

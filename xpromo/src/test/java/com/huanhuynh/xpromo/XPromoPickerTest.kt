@@ -36,6 +36,15 @@ class XPromoPickerTest {
     }
 
     @Test
+    fun rank_includeInstalled_keepsInstalledLastEvenIfDisabled() {
+        val r = XPromoPicker.rank(
+            feed, "self", listOf("household"), "VN",
+            isInstalled = { it == "chitieu" || it == "off" }, includeInstalled = true,
+        )
+        assertEquals(listOf("lich", "water", "chitieu", "off"), r.map { it.id })
+    }
+
+    @Test
     fun rank_countryFilter() {
         val us = XPromoPicker.rank(feed, "self", listOf("household"), "US", isInstalled = { false })
         val vn = XPromoPicker.rank(feed, "self", listOf("household"), "VN", isInstalled = { false })

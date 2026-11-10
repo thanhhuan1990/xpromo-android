@@ -73,9 +73,13 @@ fun MoreAppsSection(
     max: Int = 4,
     /** Chỉ hiện các app này (theo thứ tự). null = tất cả, xếp theo nhóm chủ đề. */
     ids: List<String>? = null,
+    /** Hiện cả app đã cài (nút "Mở"), xếp sau app chưa cài. */
+    showInstalled: Boolean = true,
 ) {
     val feed by xpromo.feed.collectAsState()
-    val apps = remember(feed, ids) { (if (ids != null) xpromo.targets(ids, feed) else xpromo.candidates(feed)).take(max) }
+    val apps = remember(feed, ids, showInstalled) {
+        (if (ids != null) xpromo.targets(ids, feed, showInstalled) else xpromo.candidates(feed, showInstalled)).take(max)
+    }
     if (apps.isEmpty()) return
     val context = LocalContext.current
     LaunchedEffect(apps.map { it.id }) { xpromo.onListShown(apps, placement) }
@@ -101,7 +105,8 @@ fun MoreAppsSection(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
                             )
                         }
-                        TextButton(onClick = { xpromo.open(context, app, placement) }) { Text("Cài") }
+                        val installed = remember(app.id) { xpromo.isInstalled(app.id) }
+                        TextButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) "Mở" else "Cài") }
                     }
                 }
             }
@@ -172,11 +177,15 @@ fun XPromoTargetCard(
     modifier: Modifier = Modifier,
     label: String = "Ứng dụng cùng nhà phát triển",
     button: String = "Xem",
+    openButton: String = "Mở",
+    /** Hiện cả app đã cài (nút "Mở") khi các app chưa cài đều không còn. */
+    showInstalled: Boolean = true,
 ) {
     val feed by xpromo.feed.collectAsState()
     var dismissed by remember { mutableStateOf(setOf<String>()) }
     val ids = targets.map { it.first }.filter { it !in dismissed }
-    val app = remember(feed, ids) { xpromo.target(ids, feed) } ?: return
+    val app = remember(feed, ids, showInstalled) { xpromo.target(ids, feed, showInstalled) } ?: return
+    val installed = remember(app.id) { xpromo.isInstalled(app.id) }
     val headline = targets.firstOrNull { it.first == app.id }?.second.orEmpty()
     val context = LocalContext.current
     LaunchedEffect(app.id, placement) { xpromo.onTargetShown(app, placement) }
@@ -213,7 +222,7 @@ fun XPromoTargetCard(
                     )
                 }
                 Spacer(Modifier.width(8.dp))
-                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text(button) }
+                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) openButton else button) }
             }
         }
     }

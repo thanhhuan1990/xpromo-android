@@ -9,7 +9,7 @@ plugins {
 }
 
 // JitPack đặt VERSION = tên tag (vd 1.0.0).
-val libVersion = System.getenv("VERSION")?.removePrefix("v") ?: "1.0.2"
+val libVersion = System.getenv("VERSION")?.removePrefix("v") ?: "1.0.3"
 
 android {
     namespace = "com.huanhuynh.xpromo"
