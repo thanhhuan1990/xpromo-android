@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
 `app/build.gradle.kts`:
 ```kotlin
-implementation("com.github.thanhhuan1990:xpromo-android:1.0.4")
+implementation("com.github.thanhhuan1990:xpromo-android:1.0.5")
 ```
 
 `Application.onCreate` hoặc DI container:
@@ -55,7 +55,7 @@ XPromo.get()?.let {
 XPromo.get()?.let { MoreAppsSection(it, placement = "tet", title = "Chuẩn bị Tết", ids = listOf("com.huanhuynh.lichvannien", "com.huanhuynh.vankhan")) }
 ```
 
-Changelog: 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
+Changelog: 1.0.5 – đa ngôn ngữ: `XPromoConfig(languages = listOf("vi", "en", "zh"))` (mặc định chỉ "vi" → app tiếng Việt không đổi), chữ cố định (Mở/Cài/Xem…) theo ngôn ngữ đang hiển thị của app; feed có `i18n.{en,zh}.name/tagline` (thiếu thì dùng bản tiếng Việt). 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
 
 Nhóm chủ đề đang dùng: `spiritual`, `household`, `health`, `finance`, `daily`, `fun`.
 
@@ -73,7 +73,7 @@ Nên khai báo trước `<package>` cho các app sắp làm, kể cả khi chưa
 
 ```bash
 ./gradlew :xpromo:testDebugUnitTest
-git tag 1.0.4 && git push origin main --tags
+git tag 1.0.5 && git push origin main --tags
 ```
 JitPack build tự động ở lần đầu có người tải tag đó. Xem trạng thái tại https://jitpack.io/#thanhhuan1990/xpromo-android. Repo cần để **public** để dùng JitPack miễn phí.
 

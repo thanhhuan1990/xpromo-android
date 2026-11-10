@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.10.2",
+  "version": "2026.11.10.3",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -15,7 +15,17 @@
         "household"
       ],
       "priority": 90,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Vietnamese Lunar Calendar 2027",
+          "tagline": "Lunar dates, good & bad days, auspicious hours"
+        },
+        "zh": {
+          "name": "越南万年历 2027",
+          "tagline": "农历、吉凶日、黄道吉时，初一十五提醒"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.sochitieu",
@@ -29,7 +39,17 @@
         "daily"
       ],
       "priority": 80,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Expense Book",
+          "tagline": "Track daily income & spending, see where money goes"
+        },
+        "zh": {
+          "name": "记账本",
+          "tagline": "记录每日收支，月月清楚钱花在哪"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.waterreminder",
@@ -42,7 +62,17 @@
         "daily"
       ],
       "priority": 80,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Water Reminder",
+          "tagline": "Drink on time, the right amount for your weight"
+        },
+        "zh": {
+          "name": "喝水提醒",
+          "tagline": "按时喝水，按体重算出每日饮水量"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.numerology",
@@ -54,7 +84,17 @@
         "spiritual"
       ],
       "priority": 70,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Numerology",
+          "tagline": "Discover your life path number and destiny"
+        },
+        "zh": {
+          "name": "数字命理",
+          "tagline": "探索你的生命灵数与运势"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.la_ban_phong_thuy",
@@ -67,7 +107,17 @@
         "household"
       ],
       "priority": 60,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Feng Shui Compass",
+          "tagline": "Feng shui compass, find house directions for your age"
+        },
+        "zh": {
+          "name": "风水罗盘",
+          "tagline": "风水罗盘，查看与你年命相合的房屋朝向"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.spin_the_wheel",
@@ -79,7 +129,17 @@
         "fun"
       ],
       "priority": 50,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Wheel of Anything",
+          "tagline": "Spin the wheel and let it decide for you"
+        },
+        "zh": {
+          "name": "幸运转盘",
+          "tagline": "转一转，让转盘帮你做决定"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.cyclecare",
@@ -91,7 +151,17 @@
         "health"
       ],
       "priority": 70,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Hoa Nguyet: Period Tracker",
+          "tagline": "Period calendar, ovulation days, pregnancy tracking"
+        },
+        "zh": {
+          "name": "花月：经期日历",
+          "tagline": "经期日历、排卵日、孕期追踪"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.freshnest",
@@ -104,7 +174,17 @@
         "health"
       ],
       "priority": 70,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "My Fridge",
+          "tagline": "Manage your fridge, get expiry date reminders"
+        },
+        "zh": {
+          "name": "我家冰箱",
+          "tagline": "管理冰箱食材，临期提醒"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.vankhan",
@@ -117,7 +197,17 @@
         "daily"
       ],
       "priority": 85,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Vietnamese Prayers",
+          "tagline": "Vietnamese prayers, offering trays and worship calendar"
+        },
+        "zh": {
+          "name": "越南祭文",
+          "tagline": "越南祭拜祷文、供品摆放与祭拜日历"
+        }
+      }
     },
     {
       "id": "com.huanhuynh.xinxam",
@@ -130,7 +220,17 @@
         "fun"
       ],
       "priority": 85,
-      "enabled": true
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Fortune Sticks – Xin Xam",
+          "tagline": "Guan Yin & Guan Yu fortune sticks, I Ching casting"
+        },
+        "zh": {
+          "name": "求签 – 观音灵签",
+          "tagline": "观音灵签、关帝灵签与易经起卦"
+        }
+      }
     }
   ]
 }

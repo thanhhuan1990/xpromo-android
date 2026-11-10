@@ -36,12 +36,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+/** Mã ngôn ngữ giao diện XPromo theo ngôn ngữ đang hiển thị của app (giới hạn trong `XPromoConfig.languages`). */
+@Composable
+fun xpromoLang(xpromo: XPromo): String {
+    val cfg = LocalConfiguration.current
+    val current = cfg.locales[0].language
+    return XPromoTexts.pickLang(current, xpromo.config.languages)
+}
+
+@Composable
+fun xpromoTexts(xpromo: XPromo): XPromoTexts = XPromoTexts.of(xpromoLang(xpromo))
 
 /** Icon app: tải từ URL (có cache), lỗi thì dùng icon đóng gói sẵn, cuối cùng mới hiện emoji. */
 @Composable
@@ -69,7 +81,7 @@ fun MoreAppsSection(
     xpromo: XPromo,
     modifier: Modifier = Modifier,
     placement: String = "settings",
-    title: String = "Ứng dụng khác của chúng tôi",
+    title: String = xpromoTexts(xpromo).moreApps,
     max: Int = 4,
     /** Chỉ hiện các app này (theo thứ tự). null = tất cả, xếp theo nhóm chủ đề. */
     ids: List<String>? = null,
@@ -77,6 +89,8 @@ fun MoreAppsSection(
     showInstalled: Boolean = true,
 ) {
     val feed by xpromo.feed.collectAsState()
+    val lang = xpromoLang(xpromo)
+    val texts = XPromoTexts.of(lang)
     val apps = remember(feed, ids, showInstalled) {
         (if (ids != null) xpromo.targets(ids, feed, showInstalled) else xpromo.candidates(feed, showInstalled)).take(max)
     }
@@ -99,14 +113,14 @@ fun MoreAppsSection(
                         XPromoIcon(xpromo, app, 44.dp)
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f)) {
-                            Text(app.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(app.nameIn(lang), fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(
-                                app.tagline, style = MaterialTheme.typography.bodySmall,
+                                app.taglineIn(lang), style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
                             )
                         }
                         val installed = remember(app.id) { xpromo.isInstalled(app.id) }
-                        TextButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) "Mở" else "Cài") }
+                        TextButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) texts.open else texts.install) }
                     }
                 }
             }
@@ -123,9 +137,11 @@ fun XPromoCard(
     xpromo: XPromo,
     placement: String,
     modifier: Modifier = Modifier,
-    label: String = "Ứng dụng cùng nhà phát triển",
+    label: String = xpromoTexts(xpromo).sameDeveloper,
 ) {
     val feed by xpromo.feed.collectAsState()
+    val lang = xpromoLang(xpromo)
+    val texts = XPromoTexts.of(lang)
     var hidden by remember { mutableStateOf(false) }
     val app = remember(feed) { xpromo.nextCard(feed) }
     if (app == null || hidden) return
@@ -144,21 +160,21 @@ fun XPromoCard(
                     modifier = Modifier.weight(1f),
                 )
                 IconButton(onClick = { hidden = true; xpromo.dismiss(app, placement) }) {
-                    Icon(Icons.Filled.Close, contentDescription = "Ẩn gợi ý", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Filled.Close, contentDescription = texts.hide, modifier = Modifier.size(18.dp))
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 10.dp)) {
                 XPromoIcon(xpromo, app, 52.dp)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(app.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(app.nameIn(lang), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
-                        app.tagline, style = MaterialTheme.typography.bodySmall,
+                        app.taglineIn(lang), style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Spacer(Modifier.width(8.dp))
-                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text("Xem") }
+                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text(texts.view) }
             }
         }
     }
@@ -175,13 +191,15 @@ fun XPromoTargetCard(
     targets: List<Pair<String, String>>,
     placement: String,
     modifier: Modifier = Modifier,
-    label: String = "Ứng dụng cùng nhà phát triển",
-    button: String = "Xem",
-    openButton: String = "Mở",
+    label: String = xpromoTexts(xpromo).sameDeveloper,
+    button: String = xpromoTexts(xpromo).view,
+    openButton: String = xpromoTexts(xpromo).open,
     /** Hiện cả app đã cài (nút "Mở") khi các app chưa cài đều không còn. */
     showInstalled: Boolean = true,
 ) {
     val feed by xpromo.feed.collectAsState()
+    val lang = xpromoLang(xpromo)
+    val texts = XPromoTexts.of(lang)
     var dismissed by remember { mutableStateOf(setOf<String>()) }
     val ids = targets.map { it.first }.filter { it !in dismissed }
     val app = remember(feed, ids, showInstalled) { xpromo.target(ids, feed, showInstalled) } ?: return
@@ -202,7 +220,7 @@ fun XPromoTargetCard(
                     modifier = Modifier.weight(1f),
                 )
                 IconButton(onClick = { dismissed = dismissed + app.id; xpromo.dismiss(app, placement) }) {
-                    Icon(Icons.Filled.Close, contentDescription = "Ẩn gợi ý", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Filled.Close, contentDescription = texts.hide, modifier = Modifier.size(18.dp))
                 }
             }
             if (headline.isNotBlank()) {
@@ -215,9 +233,9 @@ fun XPromoTargetCard(
                 XPromoIcon(xpromo, app, 48.dp)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(app.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(app.nameIn(lang), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
-                        app.tagline, style = MaterialTheme.typography.bodySmall,
+                        app.taglineIn(lang), style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }

@@ -39,6 +39,11 @@ data class XPromoConfig(
     val enabled: () -> Boolean = { true },
     /** Ghi analytics: xpromo_view / xpromo_click / xpromo_dismiss. */
     val analytics: (String, Map<String, Any?>) -> Unit = { _, _ -> },
+    /**
+     * Ngôn ngữ app hỗ trợ (mã ISO: vi, en, zh). Phần tử đầu là mặc định khi ngôn ngữ máy không có trong danh sách.
+     * Mặc định chỉ tiếng Việt → giao diện XPromo luôn tiếng Việt dù máy cài ngôn ngữ khác.
+     */
+    val languages: List<String> = listOf("vi"),
 ) {
     companion object {
         const val DEFAULT_FEED_URL = "https://thanhhuan1990.github.io/xpromo/apps.json"
