@@ -57,7 +57,8 @@ data class XPromoTexts(
         val VI = XPromoTexts("Ứng dụng khác của chúng tôi", "Ứng dụng cùng nhà phát triển", "Mở", "Cài", "Xem", "Ẩn gợi ý")
         val EN = XPromoTexts("More apps from us", "From the same developer", "Open", "Get", "View", "Hide")
         val ZH = XPromoTexts("我们的其他应用", "同一开发者的应用", "打开", "安装", "查看", "隐藏")
-        fun of(lang: String): XPromoTexts = when (lang) { "en" -> EN; "zh" -> ZH; else -> VI }
+        val JA = XPromoTexts("ほかのアプリ", "同じ開発者のアプリ", "開く", "入手", "見る", "非表示")
+        fun of(lang: String): XPromoTexts = when (lang) { "en" -> EN; "zh" -> ZH; "ja" -> JA; else -> VI }
 
         /** Chọn ngôn ngữ: ngôn ngữ hiện tại nếu app hỗ trợ, ngược lại ngôn ngữ đầu tiên của app. */
         fun pickLang(current: String, supported: List<String>): String =

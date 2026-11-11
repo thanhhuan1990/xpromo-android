@@ -21,5 +21,7 @@
         <package android:name="com.huanhuynh.freshnest" />
         <package android:name="com.huanhuynh.vankhan" />
         <package android:name="com.huanhuynh.xinxam" />
+        <package android:name="com.huanhuynh.cotuong" />
+        <package android:name="com.huanhuynh.covay" />
     </queries>
 </manifest>

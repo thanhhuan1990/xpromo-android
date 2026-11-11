@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
 `app/build.gradle.kts`:
 ```kotlin
-implementation("com.github.thanhhuan1990:xpromo-android:1.0.5")
+implementation("com.github.thanhhuan1990:xpromo-android:1.0.6")
 ```
 
 `Application.onCreate` hoặc DI container:
@@ -55,9 +55,9 @@ XPromo.get()?.let {
 XPromo.get()?.let { MoreAppsSection(it, placement = "tet", title = "Chuẩn bị Tết", ids = listOf("com.huanhuynh.lichvannien", "com.huanhuynh.vankhan")) }
 ```
 
-Changelog: 1.0.5 – đa ngôn ngữ: `XPromoConfig(languages = listOf("vi", "en", "zh"))` (mặc định chỉ "vi" → app tiếng Việt không đổi), chữ cố định (Mở/Cài/Xem…) theo ngôn ngữ đang hiển thị của app; feed có `i18n.{en,zh}.name/tagline` (thiếu thì dùng bản tiếng Việt). 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
+Changelog: 1.0.6 – thêm Cờ Tướng Có Thầy, Cờ Vây Có Thầy (`<queries>`, icon, danh sách đóng gói sẵn); tiếng Nhật: `languages` có thể gồm `"ja"`, feed có `i18n.ja`; nhóm chủ đề mới `games`. 1.0.5 – đa ngôn ngữ: `XPromoConfig(languages = listOf("vi", "en", "zh"))` (mặc định chỉ "vi" → app tiếng Việt không đổi), chữ cố định (Mở/Cài/Xem…) theo ngôn ngữ đang hiển thị của app; feed có `i18n.{en,zh}.name/tagline` (thiếu thì dùng bản tiếng Việt). 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
 
-Nhóm chủ đề đang dùng: `spiritual`, `household`, `health`, `finance`, `daily`, `fun`.
+Nhóm chủ đề đang dùng: `spiritual`, `household`, `health`, `finance`, `daily`, `fun`, `games`.
 
 ## Việc thường gặp
 
