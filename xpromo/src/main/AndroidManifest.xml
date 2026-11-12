@@ -23,5 +23,8 @@
         <package android:name="com.huanhuynh.xinxam" />
         <package android:name="com.huanhuynh.cotuong" />
         <package android:name="com.huanhuynh.covay" />
+        <package android:name="com.huanhuynh.covua" />
+        <package android:name="com.huanhuynh.cotyphu" />
+        <package android:name="com.huanhuynh.xepgach" />
     </queries>
 </manifest>

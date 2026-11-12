@@ -181,8 +181,19 @@ class XPromo private constructor(private val context: Context, val config: XProm
         log("xpromo_dismiss", app, placement)
     }
 
-    /** App đã cài → mở app; chưa cài → mở trang Google Play (kèm UTM). */
-    fun open(activityContext: Context, app: PromoApp, placement: String) {
+    /**
+     * App đã cài → mở app (nếu có [deepLink] thì mở thẳng màn đó, app đích chưa hỗ trợ link thì mở màn chính);
+     * chưa cài → mở trang Google Play (kèm UTM). [deepLink] chỉ là đường dẫn cố định, không kèm dữ liệu người dùng.
+     */
+    fun open(activityContext: Context, app: PromoApp, placement: String, deepLink: String? = null) {
+        if (deepLink != null && isInstalled(app.id)) {
+            val link = Intent(Intent.ACTION_VIEW, Uri.parse(deepLink)).setPackage(app.id).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val opened = runCatching { activityContext.startActivity(link) }.isSuccess
+            if (opened) {
+                log("xpromo_open_deeplink", app, placement)
+                return
+            }
+        }
         val launch = if (isInstalled(app.id)) activityContext.packageManager.getLaunchIntentForPackage(app.id) else null
         if (launch != null) {
             log("xpromo_open_app", app, placement)

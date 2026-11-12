@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
 `app/build.gradle.kts`:
 ```kotlin
-implementation("com.github.thanhhuan1990:xpromo-android:1.0.6")
+implementation("com.github.thanhhuan1990:xpromo-android:1.0.7")
 ```
 
 `Application.onCreate` hoặc DI container:
@@ -52,10 +52,15 @@ XPromo.get()?.let {
         "com.huanhuynh.vankhan" to "Văn khấn đầy đủ cho mọi lễ",
     ), placement = "lot_result")
 }
+// 1.0.7 – app đích đã cài thì mở thẳng một màn bằng deep link (chỉ đường dẫn cố định, không gửi dữ liệu người dùng):
+XPromo.get()?.let {
+    XPromoTargetCard(it, listOf("com.huanhuynh.numerology" to "Đang nghĩ tên cho bé? Thử tên theo thần số học"),
+        placement = "pregnancy_name", deepLinks = mapOf("com.huanhuynh.numerology" to "thansohoc://app/dat-ten-con"))
+}
 XPromo.get()?.let { MoreAppsSection(it, placement = "tet", title = "Chuẩn bị Tết", ids = listOf("com.huanhuynh.lichvannien", "com.huanhuynh.vankhan")) }
 ```
 
-Changelog: 1.0.6 – thêm Cờ Tướng Có Thầy, Cờ Vây Có Thầy (`<queries>`, icon, danh sách đóng gói sẵn); tiếng Nhật: `languages` có thể gồm `"ja"`, feed có `i18n.ja`; nhóm chủ đề mới `games`. 1.0.5 – đa ngôn ngữ: `XPromoConfig(languages = listOf("vi", "en", "zh"))` (mặc định chỉ "vi" → app tiếng Việt không đổi), chữ cố định (Mở/Cài/Xem…) theo ngôn ngữ đang hiển thị của app; feed có `i18n.{en,zh}.name/tagline` (thiếu thì dùng bản tiếng Việt). 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
+Changelog: 1.0.7 – `XPromoTargetCard(deepLinks = …)` / `XPromo.open(…, deepLink)`: app đích đã cài thì mở thẳng màn được chỉ định (app đích chưa hỗ trợ link → mở màn chính), event `xpromo_open_deeplink`; khai báo trước `<queries>` Cờ Vua Có Thầy, Cờ Tỷ Phú, Xếp Gạch 9999. 1.0.6 – thêm Cờ Tướng Có Thầy, Cờ Vây Có Thầy (`<queries>`, icon, danh sách đóng gói sẵn); tiếng Nhật: `languages` có thể gồm `"ja"`, feed có `i18n.ja`; nhóm chủ đề mới `games`. 1.0.5 – đa ngôn ngữ: `XPromoConfig(languages = listOf("vi", "en", "zh"))` (mặc định chỉ "vi" → app tiếng Việt không đổi), chữ cố định (Mở/Cài/Xem…) theo ngôn ngữ đang hiển thị của app; feed có `i18n.{en,zh}.name/tagline` (thiếu thì dùng bản tiếng Việt). 1.0.4 – icon đóng gói sẵn trong thư viện (dùng khi tải URL lỗi/không mạng), nền icon trung tính thay vì màu theme; log debug khi tải icon lỗi. 1.0.3 – app đã cài hiện nút "Mở" (mở thẳng app) trong `XPromoTargetCard` và `MoreAppsSection` (`showInstalled`), `XPromoCard` vẫn chỉ gợi ý app chưa cài; dùng bản danh sách mới hơn (theo `version`) giữa bản tải về và bản đóng gói sẵn. 1.0.2 – `XPromoTargetCard`, `MoreAppsSection(ids=…)`, `XPromo.targets()/target()`; thêm `<queries>` vankhan, xinxam. 1.0.1 – minSdk 24.
 
 Nhóm chủ đề đang dùng: `spiritual`, `household`, `health`, `finance`, `daily`, `fun`, `games`.
 

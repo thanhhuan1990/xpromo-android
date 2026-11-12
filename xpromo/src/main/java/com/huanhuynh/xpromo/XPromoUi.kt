@@ -184,6 +184,7 @@ fun XPromoCard(
  * Thẻ gợi ý một app cụ thể theo ngữ cảnh, kèm câu dẫn riêng.
  * `targets`: danh sách (package, câu dẫn) theo thứ tự ưu tiên – hiện app đầu tiên còn đủ điều kiện
  * (đang bật, chưa cài, chưa bị ẩn). Không giới hạn tần suất; nút ✕ ẩn app đó `hideDays` ngày.
+ * `deepLinks`: package → đường dẫn mở thẳng một màn của app đích khi app đó đã cài (1.0.7).
  */
 @Composable
 fun XPromoTargetCard(
@@ -196,6 +197,8 @@ fun XPromoTargetCard(
     openButton: String = xpromoTexts(xpromo).open,
     /** Hiện cả app đã cài (nút "Mở") khi các app chưa cài đều không còn. */
     showInstalled: Boolean = true,
+    /** package → deep link mở thẳng một màn của app đích khi đã cài, vd "thansohoc://app/dat-ten-con". */
+    deepLinks: Map<String, String> = emptyMap(),
 ) {
     val feed by xpromo.feed.collectAsState()
     val lang = xpromoLang(xpromo)
@@ -240,7 +243,7 @@ fun XPromoTargetCard(
                     )
                 }
                 Spacer(Modifier.width(8.dp))
-                FilledTonalButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) openButton else button) }
+                FilledTonalButton(onClick = { xpromo.open(context, app, placement, deepLinks[app.id]) }) { Text(if (installed) openButton else button) }
             }
         }
     }
