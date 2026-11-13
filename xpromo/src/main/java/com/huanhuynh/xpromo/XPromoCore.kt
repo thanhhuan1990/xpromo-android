@@ -62,12 +62,19 @@ data class XPromoTexts(
     val install: String,
     val view: String,
     val hide: String,
+    /** Nút mở rộng danh sách, `%d` = số app còn lại. */
+    val showMore: String = "Xem thêm %d ứng dụng",
+    val showLess: String = "Thu gọn",
 ) {
     companion object {
-        val VI = XPromoTexts("Ứng dụng khác của chúng tôi", "Ứng dụng cùng nhà phát triển", "Mở", "Cài", "Xem", "Ẩn gợi ý")
-        val EN = XPromoTexts("More apps from us", "From the same developer", "Open", "Get", "View", "Hide")
-        val ZH = XPromoTexts("我们的其他应用", "同一开发者的应用", "打开", "安装", "查看", "隐藏")
-        val JA = XPromoTexts("ほかのアプリ", "同じ開発者のアプリ", "開く", "入手", "見る", "非表示")
+        val VI = XPromoTexts("Ứng dụng khác của chúng tôi", "Ứng dụng cùng nhà phát triển", "Mở", "Cài", "Xem", "Ẩn gợi ý",
+            "Xem thêm %d ứng dụng", "Thu gọn")
+        val EN = XPromoTexts("More apps from us", "From the same developer", "Open", "Get", "View", "Hide",
+            "See %d more apps", "Show less")
+        val ZH = XPromoTexts("我们的其他应用", "同一开发者的应用", "打开", "安装", "查看", "隐藏",
+            "查看另外 %d 个应用", "收起")
+        val JA = XPromoTexts("ほかのアプリ", "同じ開発者のアプリ", "開く", "入手", "見る", "非表示",
+            "ほかのアプリをさらに %d 件見る", "閉じる")
         fun of(lang: String): XPromoTexts = when (lang) { "en" -> EN; "zh" -> ZH; "ja" -> JA; else -> VI }
 
         /** Chọn ngôn ngữ: ngôn ngữ hiện tại nếu app hỗ trợ, ngược lại ngôn ngữ đầu tiên của app. */
@@ -144,6 +151,19 @@ object XPromoPicker {
             )
             .map { it.first }
             .toList()
+    }
+
+    /**
+     * Chia danh sách đã xếp hạng thành 2 nhóm cho mục "Ứng dụng khác":
+     * nhóm 1 = app chung nhóm chủ đề với app nguồn (tối đa [max]), hiện ngay;
+     * nhóm 2 = các app còn lại (nhóm liên quan, nhóm khác, app đã cài), hiện khi bấm "Xem thêm".
+     * Không có app chung nhóm thì nhóm 1 là [max] app đầu. Thứ tự trong mỗi nhóm giữ như [ranked].
+     */
+    fun splitForList(ranked: List<PromoApp>, hostGroups: List<String>, max: Int): Pair<List<PromoApp>, List<PromoApp>> {
+        val sameGroup = ranked.filter { app -> app.groups.any { it in hostGroups } }.take(max)
+        val first = sameGroup.ifEmpty { ranked.take(max) }
+        val ids = first.map { it.id }.toSet()
+        return first to ranked.filter { it.id !in ids }
     }
 
     /**

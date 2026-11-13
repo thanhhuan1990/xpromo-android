@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -88,18 +90,36 @@ fun MoreAppsSection(
     ids: List<String>? = null,
     /** Hiện cả app đã cài (nút "Mở"), xếp sau app chưa cài. */
     showInstalled: Boolean = true,
+    /**
+     * Có nút "Xem thêm N ứng dụng" để mở rộng danh sách ra nhóm 2 (app nhóm liên quan / nhóm khác / đã cài),
+     * tối đa [maxExpanded] app tất cả. Nhóm 1 (hiện sẵn) là các app chung nhóm chủ đề, tối đa [max].
+     */
+    expandable: Boolean = true,
+    maxExpanded: Int = 12,
 ) {
     val feed by xpromo.feed.collectAsState()
     // Đổi mỗi khi app quay lại màn hình → đọc lại app nào đã cài (vừa cài xong từ Google Play thì hiện "Mở").
     val tick by xpromo.installTick.collectAsState()
     val lang = xpromoLang(xpromo)
     val texts = XPromoTexts.of(lang)
-    val apps = remember(feed, ids, showInstalled, tick, lang) {
-        (if (ids != null) xpromo.targets(ids, feed, showInstalled, lang) else xpromo.candidates(feed, showInstalled, lang)).take(max)
+    val all = remember(feed, ids, showInstalled, tick, lang) {
+        if (ids != null) xpromo.targets(ids, feed, showInstalled, lang) else xpromo.candidates(feed, showInstalled, lang)
+    }
+    val (apps, more) = remember(all, max, maxExpanded, expandable) {
+        val (first, rest) = if (ids != null) all.take(max) to all.drop(max)
+        else XPromoPicker.splitForList(all, xpromo.config.hostGroups, max)
+        first to (if (expandable) rest.take((maxExpanded - first.size).coerceAtLeast(0)) else emptyList())
     }
     if (apps.isEmpty()) return
+    var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     LaunchedEffect(apps.map { it.id }) { xpromo.onListShown(apps, placement) }
+    LaunchedEffect(expanded) {
+        if (expanded && more.isNotEmpty()) {
+            xpromo.onListShown(more, placement)
+            xpromo.config.analytics("xpromo_list_expand", mapOf("placement" to placement, "count" to more.size, "source" to xpromo.config.selfPackage))
+        }
+    }
     Column(modifier) {
         Text(
             title, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -107,7 +127,8 @@ fun MoreAppsSection(
         )
         Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 1.dp) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 2.dp)) {
-                apps.forEachIndexed { i, app ->
+                val shown = if (expanded) apps + more else apps
+                shown.forEachIndexed { i, app ->
                     if (i > 0) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     Row(
                         Modifier.fillMaxWidth().clickable { xpromo.open(context, app, placement) }.padding(vertical = 10.dp),
@@ -124,6 +145,24 @@ fun MoreAppsSection(
                         }
                         val installed = remember(app.id, tick) { xpromo.isInstalled(app.id) }
                         TextButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) texts.open else texts.install) }
+                    }
+                }
+                if (more.isNotEmpty()) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                    Row(
+                        Modifier.fillMaxWidth().clickable { expanded = !expanded }.padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            if (expanded) texts.showLess else texts.showMore.format(more.size),
+                            style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                            contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp),
+                        )
                     }
                 }
             }

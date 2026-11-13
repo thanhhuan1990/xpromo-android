@@ -102,6 +102,22 @@ class XPromoPickerTest {
     }
 
     @Test
+    fun splitForList_sameGroupFirstThenRest() {
+        val ranked = listOf(
+            app("a", listOf("games")), app("b", listOf("games")), app("c", listOf("education")),
+            app("d", listOf("games")), app("e", listOf("spiritual")),
+        )
+        val (first, rest) = XPromoPicker.splitForList(ranked, listOf("games", "fun"), max = 2)
+        assertEquals(listOf("a", "b"), first.map { it.id })
+        assertEquals(listOf("c", "d", "e"), rest.map { it.id })
+        // Không app nào chung nhóm → nhóm 1 là max app đầu.
+        val (f2, r2) = XPromoPicker.splitForList(ranked, listOf("health"), max = 3)
+        assertEquals(listOf("a", "b", "c"), f2.map { it.id })
+        assertEquals(listOf("d", "e"), r2.map { it.id })
+        assertTrue(XPromoPicker.splitForList(emptyList(), listOf("games"), 4).let { it.first.isEmpty() && it.second.isEmpty() })
+    }
+
+    @Test
     fun pickForCard_rotatesTop3() {
         val ranked = listOf(app("a"), app("b"), app("c"), app("d"))
         assertEquals(listOf("a", "b", "c", "a"), (0..3).map { XPromoPicker.pickForCard(ranked, it)!!.id })
