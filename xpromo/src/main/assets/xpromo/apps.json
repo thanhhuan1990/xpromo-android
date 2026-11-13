@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.11.1",
+  "version": "2026.11.13.2",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -29,7 +29,10 @@
           "name": "ベトナム万年暦 2027",
           "tagline": "旧暦、吉日・凶日、吉時、旧暦1日・15日のお知らせ"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.sochitieu",
@@ -57,7 +60,10 @@
           "name": "家計簿",
           "tagline": "毎日の収支を記録して、お金の行き先がわかる"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.waterreminder",
@@ -84,7 +90,10 @@
           "name": "水分補給リマインダー",
           "tagline": "体重に合わせた量を、時間どおりに飲もう"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.numerology",
@@ -110,7 +119,11 @@
           "name": "数秘術",
           "tagline": "あなたのライフパスナンバーと運勢を知る"
         }
-      }
+      },
+      "languages": [
+        "vi",
+        "en"
+      ]
     },
     {
       "id": "com.huanhuynh.la_ban_phong_thuy",
@@ -137,7 +150,10 @@
           "name": "風水コンパス",
           "tagline": "風水コンパスで、年齢に合う家の向きを確認"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.spin_the_wheel",
@@ -163,7 +179,8 @@
           "name": "Wheel of Anything",
           "tagline": "ルーレットを回して、決めてもらおう"
         }
-      }
+      },
+      "languages": []
     },
     {
       "id": "com.huanhuynh.cyclecare",
@@ -189,7 +206,10 @@
           "name": "Hoa Nguyet：生理日管理",
           "tagline": "生理カレンダー、排卵日、妊娠の記録"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.freshnest",
@@ -216,7 +236,10 @@
           "name": "うちの冷蔵庫",
           "tagline": "冷蔵庫の中身を管理、賞味期限をお知らせ"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.vankhan",
@@ -243,7 +266,10 @@
           "name": "ベトナムの祈りの言葉",
           "tagline": "ベトナムの祈祷文、お供え、お参りカレンダー"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.xinxam",
@@ -270,7 +296,10 @@
           "name": "おみくじ – Xin Xam",
           "tagline": "観音・関帝のおみくじ、易経の占い"
         }
-      }
+      },
+      "languages": [
+        "vi"
+      ]
     },
     {
       "id": "com.huanhuynh.cotuong",
@@ -280,6 +309,7 @@
       "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cotuong.png",
       "groups": [
         "games",
+        "education",
         "fun"
       ],
       "priority": 75,
@@ -297,7 +327,12 @@
           "name": "シャンチー先生",
           "tagline": "コンピュータとシャンチー対局、一手ごとに先生が解説"
         }
-      }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh"
+      ]
     },
     {
       "id": "com.huanhuynh.covay",
@@ -307,6 +342,7 @@
       "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.covay.png",
       "groups": [
         "games",
+        "education",
         "fun"
       ],
       "priority": 75,
@@ -324,7 +360,141 @@
           "name": "Cờ Vây Có Thầy",
           "tagline": "コンピュータと囲碁対局、一手ごとに先生が解説"
         }
-      }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh",
+        "ja"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.covua",
+      "name": "Cờ Vua Có Thầy",
+      "tagline": "Chơi cờ vua với máy, thầy chấm và giải thích từng nước",
+      "emoji": "♞",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.covua.png",
+      "groups": [
+        "games",
+        "education",
+        "fun"
+      ],
+      "priority": 75,
+      "enabled": false,
+      "i18n": {
+        "en": {
+          "name": "Chess Coach",
+          "tagline": "Play chess vs the computer – every move graded and explained"
+        },
+        "zh": {
+          "name": "国际象棋老师",
+          "tagline": "与电脑下国际象棋，老师逐步点评讲解"
+        },
+        "ja": {
+          "name": "チェス先生",
+          "tagline": "コンピュータとチェス対局、一手ごとに先生が解説"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh",
+        "ja"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.cotyphu",
+      "name": "Cờ Tỷ Phú",
+      "tagline": "Lắc xí ngầu, mua đất, xây khách sạn – đấu 3 máy, chơi offline",
+      "emoji": "🎲",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cotyphu.png",
+      "groups": [
+        "games",
+        "fun"
+      ],
+      "priority": 75,
+      "enabled": false,
+      "i18n": {
+        "en": {
+          "name": "Tycoon Dice",
+          "tagline": "Roll, buy cities, build hotels – beat 3 bots offline"
+        },
+        "zh": {
+          "name": "富翁棋",
+          "tagline": "掷骰子、买地、盖酒店，离线对战3个电脑"
+        },
+        "ja": {
+          "name": "タイクーン・ダイス",
+          "tagline": "サイコロを振って土地を買い、ホテルを建てる – オフラインでCPU3人と対戦"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.xepgach",
+      "name": "Xếp Gạch 9999",
+      "tagline": "Game xếp gạch như máy cầm tay năm 2000",
+      "emoji": "🧱",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.xepgach.png",
+      "groups": [
+        "games",
+        "fun"
+      ],
+      "priority": 70,
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Brick Game 9999",
+          "tagline": "The brick game from the 2000s handheld – big buttons, beeps"
+        },
+        "zh": {
+          "name": "经典砖块 9999",
+          "tagline": "重温 2000 年代掌机上的砖块游戏"
+        },
+        "ja": {
+          "name": "ブロックゲーム 9999",
+          "tagline": "2000年代の携帯ゲーム機のブロック落としを再現"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.tudien",
+      "name": "Từ Điển Anh Việt",
+      "tagline": "Tra từ offline, widget gợi ý từ mới mỗi 2 giờ kèm ví dụ",
+      "emoji": "📖",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.tudien.png",
+      "groups": [
+        "education",
+        "daily"
+      ],
+      "priority": 80,
+      "enabled": false,
+      "i18n": {
+        "en": {
+          "name": "English–Vietnamese Dictionary",
+          "tagline": "Offline dictionary with a vocabulary widget every 2 hours"
+        },
+        "zh": {
+          "name": "英越词典",
+          "tagline": "离线查词，每2小时在桌面小组件学一个新单词"
+        },
+        "ja": {
+          "name": "英越辞書",
+          "tagline": "オフライン辞書、2時間ごとに新しい単語をウィジェットで"
+        }
+      },
+      "languages": [
+        "vi"
+      ]
     }
   ]
 }

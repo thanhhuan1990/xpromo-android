@@ -28,7 +28,7 @@ data class PromoApp(
     val emoji: String = "📱",
     /** URL PNG vuông (khuyến nghị 192 px). */
     val icon: String? = null,
-    /** Nhóm chủ đề để ghép app liên quan: spiritual, household, health, finance, daily, fun… */
+    /** Nhóm chủ đề để ghép app liên quan: spiritual, household, health, finance, daily, education, games, fun… */
     val groups: List<String> = emptyList(),
     /** Mã quốc gia ISO (VN, US…). Rỗng = mọi nơi. */
     val countries: List<String> = emptyList(),
@@ -36,13 +36,23 @@ data class PromoApp(
     val enabled: Boolean = true,
     /** Bản dịch tên/mô tả theo mã ngôn ngữ (en, zh…). Thiếu thì dùng name/tagline gốc (tiếng Việt). */
     val i18n: Map<String, PromoText> = emptyMap(),
+    /**
+     * Ngôn ngữ giao diện của app đích (vi, en, zh, ja). App chưa cài chỉ được gợi ý khi người dùng đang dùng
+     * app nguồn bằng một trong các ngôn ngữ này – không gợi ý app chỉ có tiếng Việt cho người dùng tiếng Anh.
+     * Rỗng = phù hợp mọi ngôn ngữ.
+     */
+    val languages: List<String> = emptyList(),
 ) {
     fun nameIn(lang: String): String = i18n[lang]?.name?.takeIf { it.isNotBlank() } ?: name
     fun taglineIn(lang: String): String = i18n[lang]?.tagline?.takeIf { it.isNotBlank() } ?: tagline
+    fun supports(lang: String?): Boolean = lang == null || languages.isEmpty() || lang in languages
 }
 
 @Serializable
 data class PromoText(val name: String? = null, val tagline: String? = null)
+
+/** Số lần một app đã được hiện / được bấm trên máy này (để không hiện mãi một app người dùng không quan tâm). */
+data class PromoStats(val views: Int = 0, val clicks: Int = 0)
 
 /** Chữ cố định của giao diện XPromo. */
 data class XPromoTexts(
@@ -69,11 +79,40 @@ data class XPromoTexts(
 /** Chọn & sắp xếp app để quảng bá (thuần Kotlin → unit test được). */
 object XPromoPicker {
 
+    /** Đã hiện từng ấy lần mà chưa lần nào được bấm → coi như người dùng không quan tâm, xếp sau. */
+    const val FATIGUE_VIEWS = 5
+
     /**
-     * Loại: chính app đang chạy, app user đã ẩn; app chưa cài thì loại thêm app tắt / không dành cho quốc gia này.
-     * App đã cài: bỏ qua nếu `includeInstalled = false` (mặc định), ngược lại giữ (kể cả app đang tắt) và xếp sau
-     * app chưa cài – để hiện nút "Mở".
-     * Sắp: chưa cài trước → càng chung nhóm chủ đề càng lên trước → priority → tên.
+     * Nhóm gần nhau: app chung nhóm với app nguồn +2 điểm mỗi nhóm, app thuộc nhóm "liên quan" +1.
+     * Ví dụ đang ở app tâm linh (spiritual) thì app hằng ngày/gia đình vẫn được ưu tiên hơn game.
+     */
+    val RELATED: Map<String, Set<String>> = mapOf(
+        "spiritual" to setOf("daily", "household"),
+        "household" to setOf("finance", "health", "daily", "spiritual"),
+        "finance" to setOf("household", "daily"),
+        "health" to setOf("household", "daily"),
+        "daily" to setOf("spiritual", "household", "finance", "health", "education"),
+        "education" to setOf("daily", "games"),
+        "games" to setOf("fun", "education"),
+        "fun" to setOf("games"),
+    )
+
+    fun groupScore(app: PromoApp, hostGroups: List<String>): Int = app.groups.sumOf { g: String ->
+        val points: Int = when {
+            g in hostGroups -> 2
+            hostGroups.any { h -> RELATED[h]?.contains(g) == true } -> 1
+            else -> 0
+        }
+        points
+    }
+
+    private fun fatigued(s: PromoStats?): Boolean = s != null && s.clicks == 0 && s.views >= FATIGUE_VIEWS
+
+    /**
+     * Loại: chính app đang chạy, app user đã ẩn; app chưa cài thì loại thêm app tắt / không dành cho quốc gia này /
+     * không có ngôn ngữ [lang]. App đã cài: bỏ qua nếu `includeInstalled = false` (mặc định), ngược lại giữ
+     * (kể cả app đang tắt) và xếp sau app chưa cài – để hiện nút "Mở".
+     * Sắp: chưa cài trước → app chưa "nhàm" (xem [FATIGUE_VIEWS]) → điểm nhóm → priority → tên.
      */
     fun rank(
         feed: PromoFeed,
@@ -83,6 +122,8 @@ object XPromoPicker {
         isInstalled: (String) -> Boolean,
         hidden: Set<String> = emptySet(),
         includeInstalled: Boolean = false,
+        lang: String? = null,
+        stats: Map<String, PromoStats> = emptyMap(),
     ): List<PromoApp> {
         val c = country?.uppercase()
         return feed.apps
@@ -91,11 +132,13 @@ object XPromoPicker {
             .map { it to isInstalled(it.id) }
             .filter { (app, installed) ->
                 if (installed) includeInstalled
-                else app.enabled && (app.countries.isEmpty() || (c != null && c in app.countries.map(String::uppercase)))
+                else app.enabled && app.supports(lang) &&
+                    (app.countries.isEmpty() || (c != null && c in app.countries.map(String::uppercase)))
             }
             .sortedWith(
                 compareBy<Pair<PromoApp, Boolean>> { it.second }
-                    .thenByDescending { (app, _) -> app.groups.count { it in hostGroups } }
+                    .thenBy { (app, _) -> fatigued(stats[app.id]) }
+                    .thenByDescending { (app, _) -> groupScore(app, hostGroups) }
                     .thenByDescending { it.first.priority }
                     .thenBy { it.first.name }
             )
@@ -105,12 +148,13 @@ object XPromoPicker {
 
     /**
      * App cho thẻ gợi ý: xoay vòng trong nhóm đầu (tối đa 3 app) theo số lần đã hiện,
-     * để user không thấy mãi một app.
+     * bỏ app vừa hiện lần trước ([lastId]) nếu còn lựa chọn khác, để user không thấy mãi một app.
      */
-    fun pickForCard(ranked: List<PromoApp>, shownCount: Int): PromoApp? {
+    fun pickForCard(ranked: List<PromoApp>, shownCount: Int, lastId: String? = null): PromoApp? {
         if (ranked.isEmpty()) return null
         val top = ranked.take(3)
-        return top[shownCount.mod(top.size)]
+        val pool = top.filter { it.id != lastId }.ifEmpty { top }
+        return pool[shownCount.mod(pool.size)]
     }
 
     /** Link Google Play kèm UTM để Play Console thống kê lượt cài theo app nguồn & vị trí. */

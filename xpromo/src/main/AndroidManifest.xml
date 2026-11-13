@@ -5,12 +5,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!--
-        Android 11+: chỉ thấy được app đã khai báo ở đây → dùng để không gợi ý app user đã cài.
-        Manifest này tự gộp vào app dùng thư viện. Có app mới: thêm package vào đây (và apps.json), ra phiên bản mới.
-        Được phép khai báo trước package của app chưa phát hành.
-        Test ManifestQueriesTest kiểm tra mọi app trong assets/xpromo/apps.json đều có ở đây.
+        Android 11+: chỉ thấy được app khai báo ở đây → dùng để biết app nào đã cài (nút "Mở" thay vì "Cài").
+        Manifest này tự gộp vào app dùng thư viện.
+        1. <intent> MEMBER: thấy mọi app có XPromo ≥ 1.0.8 (kể cả app phát hành sau này, không cần sửa danh sách).
+        2. <package>: thấy các app dùng XPromo cũ (chưa có MEMBER). Có app mới vẫn nên thêm vào đây + apps.json.
+        Test manifestQueries_coverEveryFeedApp kiểm tra mọi app trong assets/xpromo/apps.json đều có <package>.
     -->
     <queries>
+        <intent>
+            <action android:name="com.huanhuynh.xpromo.MEMBER" />
+        </intent>
         <package android:name="com.huanhuynh.lichvannien" />
         <package android:name="com.huanhuynh.sochitieu" />
         <package android:name="com.huanhuynh.waterreminder" />
@@ -26,5 +30,21 @@
         <package android:name="com.huanhuynh.covua" />
         <package android:name="com.huanhuynh.cotyphu" />
         <package android:name="com.huanhuynh.xepgach" />
+        <package android:name="com.huanhuynh.tudien" />
     </queries>
+
+    <application>
+        <!-- Đánh dấu app này dùng XPromo để các app cùng nhà phát triển thấy được (xem XPromoMemberActivity). -->
+        <activity
+            android:name="com.huanhuynh.xpromo.XPromoMemberActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="com.huanhuynh.xpromo.MEMBER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

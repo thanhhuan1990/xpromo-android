@@ -73,7 +73,8 @@ fun XPromoIcon(xpromo: XPromo, app: PromoApp, size: Dp = 44.dp) {
 }
 
 /**
- * Mục "Ứng dụng khác của chúng tôi" (đặt trong Cài đặt / Giới thiệu). Chỉ hiện app chưa cài.
+ * Mục "Ứng dụng khác của chúng tôi" (đặt trong Cài đặt / Giới thiệu). App chưa cài lên trước (nút "Cài"),
+ * app đã cài xếp sau (nút "Mở") khi `showInstalled`. Chỉ gợi ý app có ngôn ngữ đang dùng.
  * Không hiện gì nếu danh sách rỗng hoặc bị tắt từ xa.
  */
 @Composable
@@ -89,10 +90,12 @@ fun MoreAppsSection(
     showInstalled: Boolean = true,
 ) {
     val feed by xpromo.feed.collectAsState()
+    // Đổi mỗi khi app quay lại màn hình → đọc lại app nào đã cài (vừa cài xong từ Google Play thì hiện "Mở").
+    val tick by xpromo.installTick.collectAsState()
     val lang = xpromoLang(xpromo)
     val texts = XPromoTexts.of(lang)
-    val apps = remember(feed, ids, showInstalled) {
-        (if (ids != null) xpromo.targets(ids, feed, showInstalled) else xpromo.candidates(feed, showInstalled)).take(max)
+    val apps = remember(feed, ids, showInstalled, tick, lang) {
+        (if (ids != null) xpromo.targets(ids, feed, showInstalled, lang) else xpromo.candidates(feed, showInstalled, lang)).take(max)
     }
     if (apps.isEmpty()) return
     val context = LocalContext.current
@@ -119,7 +122,7 @@ fun MoreAppsSection(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis,
                             )
                         }
-                        val installed = remember(app.id) { xpromo.isInstalled(app.id) }
+                        val installed = remember(app.id, tick) { xpromo.isInstalled(app.id) }
                         TextButton(onClick = { xpromo.open(context, app, placement) }) { Text(if (installed) texts.open else texts.install) }
                     }
                 }
@@ -142,8 +145,9 @@ fun XPromoCard(
     val feed by xpromo.feed.collectAsState()
     val lang = xpromoLang(xpromo)
     val texts = XPromoTexts.of(lang)
+    val tick by xpromo.installTick.collectAsState()
     var hidden by remember { mutableStateOf(false) }
-    val app = remember(feed) { xpromo.nextCard(feed) }
+    val app = remember(feed, tick, lang) { xpromo.nextCard(feed, lang) }
     if (app == null || hidden) return
     val context = LocalContext.current
     LaunchedEffect(app.id) { xpromo.onCardShown(app, placement) }
@@ -205,8 +209,9 @@ fun XPromoTargetCard(
     val texts = XPromoTexts.of(lang)
     var dismissed by remember { mutableStateOf(setOf<String>()) }
     val ids = targets.map { it.first }.filter { it !in dismissed }
-    val app = remember(feed, ids, showInstalled) { xpromo.target(ids, feed, showInstalled) } ?: return
-    val installed = remember(app.id) { xpromo.isInstalled(app.id) }
+    val tick by xpromo.installTick.collectAsState()
+    val app = remember(feed, ids, showInstalled, tick, lang) { xpromo.target(ids, feed, showInstalled, lang) } ?: return
+    val installed = remember(app.id, tick) { xpromo.isInstalled(app.id) }
     val headline = targets.firstOrNull { it.first == app.id }?.second.orEmpty()
     val context = LocalContext.current
     LaunchedEffect(app.id, placement) { xpromo.onTargetShown(app, placement) }
