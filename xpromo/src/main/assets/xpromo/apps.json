@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.13.2",
+  "version": "2026.11.23.1",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -28,6 +28,36 @@
         "ja": {
           "name": "ベトナム万年暦 2027",
           "tagline": "旧暦、吉日・凶日、吉時、旧暦1日・15日のお知らせ"
+        }
+      },
+      "languages": [
+        "vi"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.tuvi",
+      "name": "Tử Vi 2027 – Vận Hạn",
+      "tagline": "Sao chiếu mệnh, vận hạn, tuổi xông đất, cúng sao giải hạn",
+      "emoji": "🌙",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.tuvi.png",
+      "groups": [
+        "spiritual",
+        "daily"
+      ],
+      "priority": 95,
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Vietnamese Horoscope 2027",
+          "tagline": "Ruling star, yearly fortune, New Year first-footer"
+        },
+        "zh": {
+          "name": "越南紫微 2027",
+          "tagline": "本命星、流年运势、春节首访吉龄"
+        },
+        "ja": {
+          "name": "ベトナム紫微斗数 2027",
+          "tagline": "本命星、年運、旧正月の初訪問者"
         }
       },
       "languages": [
@@ -303,7 +333,7 @@
     },
     {
       "id": "com.huanhuynh.cotuong",
-      "name": "Cờ Tướng Có Thầy – Offline",
+      "name": "Cờ Tướng Có Thầy",
       "tagline": "Chơi cờ tướng với máy, thầy chấm và giải thích từng nước",
       "emoji": "♟️",
       "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cotuong.png",
@@ -316,7 +346,7 @@
       "enabled": true,
       "i18n": {
         "en": {
-          "name": "Xiangqi Coach",
+          "name": "Cờ Tướng Có Thầy",
           "tagline": "Play Chinese chess offline – every move graded and explained"
         },
         "zh": {
@@ -380,10 +410,10 @@
         "fun"
       ],
       "priority": 75,
-      "enabled": false,
+      "enabled": true,
       "i18n": {
         "en": {
-          "name": "Chess Coach",
+          "name": "Cờ Vua Có Thầy",
           "tagline": "Play chess vs the computer – every move graded and explained"
         },
         "zh": {
@@ -407,16 +437,16 @@
       "name": "Cờ Tỷ Phú",
       "tagline": "Lắc xí ngầu, mua đất, xây khách sạn – đấu 3 máy, chơi offline",
       "emoji": "🎲",
-      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cotyphu.png",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cotyphu.png?v=2",
       "groups": [
         "games",
         "fun"
       ],
       "priority": 75,
-      "enabled": false,
+      "enabled": true,
       "i18n": {
         "en": {
-          "name": "Tycoon Dice",
+          "name": "Cờ Tỷ Phú",
           "tagline": "Roll, buy cities, build hotels – beat 3 bots offline"
         },
         "zh": {

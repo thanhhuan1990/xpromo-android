@@ -16,6 +16,7 @@
             <action android:name="com.huanhuynh.xpromo.MEMBER" />
         </intent>
         <package android:name="com.huanhuynh.lichvannien" />
+        <package android:name="com.huanhuynh.tuvi" />
         <package android:name="com.huanhuynh.sochitieu" />
         <package android:name="com.huanhuynh.waterreminder" />
         <package android:name="com.huanhuynh.numerology" />
