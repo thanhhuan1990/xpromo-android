@@ -6,11 +6,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +21,6 @@ import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
 
 /** Cấu hình cho từng app chủ. */
 data class XPromoConfig(
@@ -306,37 +303,30 @@ class XPromo private constructor(private val context: Context, val config: XProm
 
     // ---------------- Icon ----------------
 
-    private val memIcons = ConcurrentHashMap<String, ImageBitmap>()
+    private val icons = IconDecoder(context)
 
     suspend fun icon(url: String): ImageBitmap? = icon(url, "")
 
     /**
-     * Icon app: bộ nhớ → file cache (7 ngày) → tải [url] → icon đóng gói sẵn `assets/xpromo/icons/<id>.png`.
-     * Không mạng / URL lỗi vẫn có icon thật thay vì emoji.
+     * Icon app: bộ nhớ (LRU) → file cache (7 ngày) → tải [url] xuống file → icon đóng gói sẵn
+     * `assets/xpromo/icons/<id>.png`. Ảnh luôn decode từ file có downsample (≤ 192 px), không decode từ luồng mạng.
      */
     suspend fun icon(url: String?, id: String): ImageBitmap? {
         val key = url ?: "asset:$id"
-        memIcons[key]?.let { return it }
+        icons[key]?.let { return it }
         return withContext(Dispatchers.IO) {
             val fromNet = url?.let { u ->
                 val dir = File(context.cacheDir, "xpromo_icons").apply { mkdirs() }
                 val file = File(dir, u.hashCode().toUInt().toString() + ".png")
                 if (!file.exists() || System.currentTimeMillis() - file.lastModified() > 7 * DAY_MS) {
-                    val bytes = httpGetBytes(u)
-                    if (bytes == null) log("icon tải lỗi: $u")
-                    bytes?.let { b -> runCatching { file.writeBytes(b) } }
+                    if (!IconDownloader.download(u, file)) log("icon tải lỗi: $u")
                 }
-                runCatching { BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap() }.getOrNull()
-                    ?: run { file.delete(); null }
+                if (file.exists()) icons.fromFile(file) ?: run { file.delete(); null } else null
             }
-            val bmp = fromNet ?: id.takeIf { it.isNotEmpty() }?.let { bundledIcon(it) }
-            bmp?.also { if (fromNet != null) memIcons[key] = it }
+            val bmp = fromNet ?: id.takeIf { it.isNotEmpty() }?.let { icons.fromAsset("xpromo/icons/$it.png") }
+            bmp?.also { icons.put(if (fromNet != null) key else "asset:$id", it) }
         }
     }
-
-    private fun bundledIcon(id: String): ImageBitmap? = runCatching {
-        context.assets.open("xpromo/icons/$id.png").use { BitmapFactory.decodeStream(it)?.asImageBitmap() }
-    }.getOrNull()
 
     private fun log(msg: String) {
         if ((context.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
