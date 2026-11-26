@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.23.1",
+  "version": "2026.11.26.1",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -488,6 +488,38 @@
         "ja": {
           "name": "ブロックゲーム 9999",
           "tagline": "2000年代の携帯ゲーム機のブロック落としを再現"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh"
+      ]
+    },
+    {
+      "id": "com.huanhuynh.cubesolver",
+      "name": "Giải Cube 3x3",
+      "tagline": "Quét khối 3x3 bằng camera, giải từng bước 3D, tự học giải",
+      "emoji": "🧊",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.cubesolver.png",
+      "groups": [
+        "games",
+        "education"
+      ],
+      "priority": 80,
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Cube Solver 3x3",
+          "tagline": "Scan your 3x3 cube, solve it step by step in 3D, learn to solve it"
+        },
+        "zh": {
+          "name": "解魔方",
+          "tagline": "相机扫描三阶魔方，3D 一步步还原，教你自己解"
+        },
+        "ja": {
+          "name": "キューブ解法 3x3",
+          "tagline": "カメラで3x3キューブを読み取り、3Dで一手ずつ解く"
         }
       },
       "languages": [

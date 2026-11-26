@@ -31,6 +31,7 @@
         <package android:name="com.huanhuynh.covua" />
         <package android:name="com.huanhuynh.cotyphu" />
         <package android:name="com.huanhuynh.xepgach" />
+        <package android:name="com.huanhuynh.cubesolver" />
         <package android:name="com.huanhuynh.tudien" />
     </queries>
 
