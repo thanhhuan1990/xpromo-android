@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026.11.26.1",
+  "version": "2026.11.27.1",
   "developer": "HuanHuynh",
   "apps": [
     {
@@ -187,8 +187,8 @@
     },
     {
       "id": "com.huanhuynh.spin_the_wheel",
-      "name": "Wheel of Anything",
-      "tagline": "Vòng quay may mắn – để vòng quay quyết định giúp bạn",
+      "name": "Vòng Quay May Mắn",
+      "tagline": "Quay một vòng – để vòng quay chọn giúp bạn",
       "emoji": "🎡",
       "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.spin_the_wheel.png?v=2",
       "groups": [
@@ -206,11 +206,21 @@
           "tagline": "转一转，让转盘帮你做决定"
         },
         "ja": {
-          "name": "Wheel of Anything",
+          "name": "なんでもルーレット",
           "tagline": "ルーレットを回して、決めてもらおう"
+        },
+        "fr": {
+          "name": "La Roue de Tout",
+          "tagline": "Faites tourner la roue et laissez-la décider"
         }
       },
-      "languages": []
+      "languages": [
+        "vi",
+        "en",
+        "fr",
+        "zh",
+        "ja"
+      ]
     },
     {
       "id": "com.huanhuynh.cyclecare",
@@ -529,6 +539,34 @@
       ]
     },
     {
+      "id": "com.huanhuynh.lanternqueens",
+      "name": "Đèn Lồng – Lantern Queens",
+      "tagline": "Câu đố logic thắp đèn lồng: mỗi hàng, cột, vùng màu 1 đèn",
+      "emoji": "🏮",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.huanhuynh.lanternqueens.png",
+      "groups": [
+        "games",
+        "fun"
+      ],
+      "priority": 80,
+      "enabled": true,
+      "i18n": {
+        "en": {
+          "name": "Lantern Queens – Logic Puzzle",
+          "tagline": "One lantern per row, column and color region – hints explain every step"
+        },
+        "zh": {
+          "name": "灯笼皇后",
+          "tagline": "点亮灯笼的逻辑谜题：每行、每列、每个色区恰好一盏灯"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "zh"
+      ]
+    },
+    {
       "id": "com.huanhuynh.tudien",
       "name": "Từ Điển Anh Việt",
       "tagline": "Tra từ offline, widget gợi ý từ mới mỗi 2 giờ kèm ví dụ",
@@ -556,6 +594,32 @@
       },
       "languages": [
         "vi"
+      ]
+    },
+    {
+      "id": "com.thanhhuan.beyeu",
+      "name": "Bé Yêu: Nhật ký bú, ngủ, tã",
+      "tagline": "Ghi cữ bú, thay tã, giấc ngủ; nhắc mua sữa, tã. Hỗ trợ sinh đôi",
+      "emoji": "👶",
+      "icon": "https://thanhhuan1990.github.io/xpromo/icons/com.thanhhuan.beyeu.png",
+      "groups": [
+        "health",
+        "household"
+      ],
+      "priority": 80,
+      "enabled": false,
+      "i18n": {
+        "en": {
+          "name": "Bé Yêu: Baby Feeding Tracker",
+          "tagline": "Log feeds, diapers and sleep. Built for twins and triplets"
+        }
+      },
+      "languages": [
+        "vi",
+        "en",
+        "id",
+        "th",
+        "es"
       ]
     }
   ]
